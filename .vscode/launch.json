@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Users/rouni/OneDrive/Desktop/School CSUF/FA 24/CPSC 335 Algo Eng/Project 3/The-Opponent-Avoidance-Problem",
+      "program": "c:/Users/rouni/OneDrive/Desktop/School CSUF/FA 24/CPSC 335 Algo Eng/Project 3/The-Opponent-Avoidance-Problem/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

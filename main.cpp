@@ -1,73 +1,108 @@
 #include <iostream>
 #include <vector>
-
 using namespace std;
 
-//Define countPaths function
-int countPaths(vector<vector<char>>& grid) {
+// Function to input the grid
+vector<vector<char>> inputGrid()
+{
+    int r, c;
+    cout << "\nEnter the number of rows: \n\n";
+    cin >> r;
+    cout << "\nEnter the number of columns: \n\n";
+    cin >> c;
 
-    int rows = grid.size(); 
-    int cols = grid[0].size();
-
-    // Create a 2D array to store the number of paths to each cell
-    vector<vector<int>> dp(rows, vector<int>(cols, 0));
-
-    // Initialize the top-left cell
-    dp[0][0] = (grid[0][0] == '.') ? 1 : 0;
-
-    // Initialize the first row
-    for (int col = 1; col < cols; col++) {
-        if (grid[0][col] == '.') {
-            dp[0][col] = dp[0][col - 1];
+    vector<vector<char>> grid(r, vector<char>(c));
+    cout << "\nEnter the grid row by row (use '.' for passable and 'X' for impassable cells):\n"
+         << endl;
+    for (int i = 0; i < r; ++i)
+    {
+        for (int j = 0; j < c; ++j)
+        {
+            cin >> grid[i][j];
         }
     }
-
-    // Initialize the first column
-    for (int row = 1; row < rows; row++) {
-        if (grid[row][0] == '.') {
-            dp[row][0] = dp[row - 1][0];
-        }
-    }
-
-    // Fill in the DP array
-    for (int row = 1; row < rows; row++) {
-        for (int col = 1; col < cols; col++) {
-            if (grid[row][col] == '.') {
-                dp[row][col] = dp[row - 1][col] + dp[row][col - 1];
-            }
-        }
-    }
-
-    // The result is stored in the bottom-right cell
-    return dp[rows - 1][cols - 1];
+    return grid;
 }
 
-int main() {
-    int rows, cols; //Declare variables
+// Helper function to check if the path is valid
+bool isValidPath(const vector<vector<char>> &grid, const vector<int> &path, int r, int c)
+{
+    int x = 0, y = 0;
+    for (int move : path)
+    {
+        if (move == 0)
+            y++; // Move right
+        else
+            x++; // Move down
+        if (x >= r || y >= c || grid[x][y] == 'X')
+            return false;
+    }
+    return (x == r - 1 && y == c - 1);
+}
 
-    cin >> rows >> cols; //Input rows and columns
+// Exhaustive search function
+int exhaustive_search(const vector<vector<char>> &grid)
+{
+    int r = grid.size();
+    int c = grid[0].size();
+    int len = r + c - 2;
+    int maxPaths = 1 << len; // Total number of binary combinations
+    int counter = 0;
 
-    vector<vector<char>> grid(rows, vector<char>(cols)); //Define a vector
+    for (int bits = 0; bits < maxPaths; ++bits)
+    {
+        vector<int> path;
+        for (int k = 0; k < len; ++k)
+        {
+            if ((bits >> k) & 1)
+                path.push_back(1); // Down
+            else
+                path.push_back(0); // Right
+        }
+        if (isValidPath(grid, path, r, c))
+            counter++;
+    }
+    return counter;
+}
 
-    //Iterate through grid
-    for (int row = 0; row < rows; row++) {
-        for (int col = 0; col < cols; col++) {
-            cin >> grid[row][col]; //Input the grid values
+// Dynamic programming function
+int dynamic_programming(const vector<vector<char>> &grid)
+{
+    int r = grid.size();
+    int c = grid[0].size();
+    if (grid[0][0] == 'X' || grid[r - 1][c - 1] == 'X')
+        return 0;
+
+    vector<vector<int>> dp(r, vector<int>(c, 0));
+    dp[0][0] = 1;
+
+    for (int i = 0; i < r; ++i)
+    {
+        for (int j = 0; j < c; ++j)
+        {
+            if (grid[i][j] == 'X')
+                continue;
+            if (i > 0)
+                dp[i][j] += dp[i - 1][j]; // From above
+            if (j > 0)
+                dp[i][j] += dp[i][j - 1]; // From left
         }
     }
+    return dp[r - 1][c - 1];
+}
 
-    int result = countPaths(grid); //Function call
+int main()
+{
+    // Input the grid
+    vector<vector<char>> grid = inputGrid();
 
-    cout << result << endl; //Display the result
-    cout << result << endl; //Display the result
-    cout << result << endl; //Display the result
-    cout << result << endl; //Display the result
+    // Run exhaustive search
+    cout << "\nExhaustive Search Result: " << exhaustive_search(grid) << endl
+         << endl;
 
-    /*
-    ......X.X
-    
-    */
-    
+    // Run dynamic programming
+    cout << "Dynamic Programming Result: " << dynamic_programming(grid) << endl
+         << endl;
 
     return 0;
 }

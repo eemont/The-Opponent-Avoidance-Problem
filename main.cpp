@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <chrono> // For measuring time
 using namespace std;
+using namespace std::chrono;
 
 // Function to input the grid
 vector<vector<char>> inputGrid()
@@ -96,12 +98,26 @@ int main()
     // Input the grid
     vector<vector<char>> grid = inputGrid();
 
-    // Run exhaustive search
-    cout << "\nExhaustive Search Result: " << exhaustive_search(grid) << endl
+    // Measure time for exhaustive search
+    auto start_exhaustive = high_resolution_clock::now();
+    int exhaustive_result = exhaustive_search(grid);
+    auto end_exhaustive = high_resolution_clock::now();
+    auto duration_exhaustive = duration_cast<microseconds>(end_exhaustive - start_exhaustive);
+
+    // Display result and time for exhaustive search
+    cout << "\nExhaustive Search Result: " << exhaustive_result << endl;
+    cout << "Time taken by Exhaustive Search: " << duration_exhaustive.count() << " microseconds\n"
          << endl;
 
-    // Run dynamic programming
-    cout << "Dynamic Programming Result: " << dynamic_programming(grid) << endl
+    // Measure time for dynamic programming
+    auto start_dp = high_resolution_clock::now();
+    int dp_result = dynamic_programming(grid);
+    auto end_dp = high_resolution_clock::now();
+    auto duration_dp = duration_cast<microseconds>(end_dp - start_dp);
+
+    // Display result and time for dynamic programming
+    cout << "Dynamic Programming Result: " << dp_result << endl;
+    cout << "Time taken by Dynamic Programming: " << duration_dp.count() << " microseconds\n"
          << endl;
 
     return 0;
